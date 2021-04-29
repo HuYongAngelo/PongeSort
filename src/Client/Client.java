@@ -3,6 +3,7 @@ package Client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -23,12 +24,12 @@ public class Client {
             Socket server = new Socket("127.0.0.1", 5500);
             
             PrintWriter out = new PrintWriter(server.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
             
-            out.print(lista[0]);
+            ObjectOutputStream oos = new ObjectOutputStream(server.getOutputStream());
+            oos.writeObject(lista);
             
             out.close();
-            in.close();
+            oos.close();
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
