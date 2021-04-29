@@ -1,8 +1,11 @@
 package Server;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,25 +16,23 @@ public class Server {
 
     public static void main(String[] args) {
         try {
-            int i=0;
-            String risposta="";
+            char[] risposta;
             
             ServerSocket ss = new ServerSocket(5500);    
             Socket client = ss.accept();
-
-            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             
-            do {
-                risposta = in.readLine();
-                if (risposta != null) {
-                    System.out.println(risposta);
-                }
-            } while (risposta != null);
+            ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
             
-            out.close();
-            in.close();
+            risposta = (char[]) ois.readObject();
+            
+            for (int i=0; i<risposta.length; i++) {
+                System.out.println(risposta[i]);
+            }
+            
+            ois.close();
         } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
